@@ -30,8 +30,8 @@ retries with exponential backoff and conditional requests via
 ETag/If-None-Match to avoid unnecessary downloads.
 
 %prep
-%goprep -k
-%go_vendor_archive_extract -a 1
+%goprep -p1
+tar -xf %{S:1}
 
 %generate_buildrequires
 %go_generate_buildrequires
