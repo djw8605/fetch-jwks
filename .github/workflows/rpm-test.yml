@@ -18,15 +18,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - distro: fedora:39
-            name: Fedora 39
-          - distro: fedora:40
-            name: Fedora 40
-          - distro: rockylinux:9
-            name: EPEL 9 (Rocky Linux 9)
-            epel_release: epel-release
+          - distro: fedora
+            name: Fedora
           - distro: almalinux:9
             name: EPEL 9 (AlmaLinux 9)
+            epel_release: epel-release
+          - distro: almalinux:10
+            name: EPEL 10 (AlmaLinux 10)
             epel_release: epel-release
     
     container:

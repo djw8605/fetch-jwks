@@ -21,6 +21,7 @@ The spec file follows these requirements:
 The RPM is designed to build on:
 - Fedora 39+
 - EPEL 9 (RHEL 9, Rocky Linux 9, AlmaLinux 9)
+- EPEL 10 (RHEL 10, Rocky Linux 10, AlmaLinux 10)
 
 ## Building
 
@@ -30,7 +31,7 @@ See the main [README.md](../README.md#rpm-packaging) for build instructions.
 
 RPM builds are automatically tested in CI on multiple platforms:
 - GitHub Actions workflow: `.github/workflows/rpm-test.yml`
-- Tests on: Fedora 39, Fedora 40, Rocky Linux 9, AlmaLinux 9
+- Tests on: Fedora (rawhide), EPEL 9 and EPEL 10
 
 ## Version Management
 
