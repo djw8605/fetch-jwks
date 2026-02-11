@@ -105,6 +105,10 @@ jobs:
           
           # Copy spec file to rpmbuild SPECS directory
           cp rpm/fetch-jwks.spec "${HOME}/rpmbuild/SPECS/"
+
+          # go_vendor_archive expects Source0 next to the spec file
+          cp "${HOME}/rpmbuild/SOURCES/fetch-jwks-${version}.tar.gz" \
+            "${HOME}/rpmbuild/SPECS/fetch-jwks-${version}.tar.gz"
           
           # Update spec file to use correct version
           sed -i "s/^Version:.*/Version:        ${version}/" "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
