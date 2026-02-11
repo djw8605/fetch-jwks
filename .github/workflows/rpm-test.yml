@@ -114,10 +114,12 @@ jobs:
           sed -i "s/^Version:.*/Version:        ${version}/" "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
           
           # Run go_vendor_archive from the git checkout root
-          # It will create the vendor tarball and place it in rpmbuild/SOURCES
-          cd ${HOME}/rpmbuild/SOURCES
+          # It will create the vendor tarball and place it in rpmbuild/SPECS
           go_vendor_archive create "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
-          
+          # Copy the generated vendor tarball to rpmbuild/SOURCES so rpmbuild can find it
+          vendor_tarball=$(grep -E '^Source[0-9]+:' "${HOME}/rpmbuild/SPECS/fetch-jwks.spec" | awk '{print $2}')
+          cp "${HOME}/rpmbuild/SPECS/${vendor_tarball}" "${HOME}/rpmbuild/SOURCES/"
+
 
       - name: Build RPM
         run: |
