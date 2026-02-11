@@ -9,11 +9,18 @@ Name:           fetch-jwks
 Release:        1%{?dist}
 Summary:        CLI tool for fetching and caching JWKS documents from OAuth2/OIDC issuers
 
-License:        Apache-2.0
+# Main package is Apache-2.0
+# Vendored dependencies include:
+# - gopkg.in/yaml.v3: MIT OR Apache-2.0
+License:        Apache-2.0 AND (MIT OR Apache-2.0)
 URL:            %{gourl}
 Source0:        %{forgeurl}/archive/v%{version}/fetch-jwks-%{version}.tar.gz
+# Generate vendor tarball with:
+# go-vendor-archive -f %{goipath} -v %{version}
+Source1:        %{goipath}-%{version}-vendor.tar.gz
 
 BuildRequires:  go-rpm-macros
+BuildRequires:  go-vendor-tools
 BuildRequires:  golang
 
 %description
@@ -24,6 +31,8 @@ ETag/If-None-Match to avoid unnecessary downloads.
 
 %prep
 %goprep -k
+%go_vendor_archive_extract -a 1
+
 %generate_buildrequires
 %go_generate_buildrequires
 
@@ -41,6 +50,8 @@ install -d -m 0755 %{buildroot}%{_localstatedir}/cache/jwks
 
 %files
 %license LICENSE
+%license _licenses/*
+%license vendor/modules.txt
 %doc README.md examples/fetch-jwks.example.yaml
 %{_bindir}/fetch-jwks
 %config(noreplace) %{_sysconfdir}/fetch-jwks.conf

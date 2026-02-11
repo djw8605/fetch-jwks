@@ -18,6 +18,7 @@ jobs:
           dnf install -y \
             git \
             go-rpm-macros \
+            go-vendor-tools \
             golang \
             rpm-build \
             rpmdevtools
@@ -39,7 +40,19 @@ jobs:
             --transform "s,^\./,fetch-jwks-${version}/," \
             --transform "s,^\.,fetch-jwks-${version}," \
             --exclude=.git \
+            --exclude=.github \
             .
+
+      - name: Generate vendor tarball
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          cd "${HOME}/rpmbuild/SOURCES"
+          tar xzf "fetch-jwks-${version}.tar.gz"
+          cd "fetch-jwks-${version}"
+          go-vendor-archive -f fetch-jwks -v "${version}"
+          mv "fetch-jwks-${version}-vendor.tar.gz" "${HOME}/rpmbuild/SOURCES/"
+          cd "${HOME}/rpmbuild/SOURCES"
+          rm -rf "fetch-jwks-${version}"
 
       - name: Build RPM
         run: |

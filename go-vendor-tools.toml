@@ -1,0 +1,6 @@
+# Configuration for go-vendor-tools
+# See https://fedora.gitlab.io/sigs/go/go-vendor-tools/
+
+[main]
+# go-vendor-archive will write vendor license files to this directory
+license-dir = "_licenses"

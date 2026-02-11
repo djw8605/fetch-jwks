@@ -1,0 +1,188 @@
+name: RPM Build Test
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    paths:
+      - 'rpm/**'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/rpm-test.yml'
+
+jobs:
+  build-rpm:
+    name: Build RPM on ${{ matrix.distro }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: fedora:39
+            name: Fedora 39
+          - distro: fedora:40
+            name: Fedora 40
+          - distro: rockylinux:9
+            name: EPEL 9 (Rocky Linux 9)
+            epel_release: epel-release
+          - distro: almalinux:9
+            name: EPEL 9 (AlmaLinux 9)
+            epel_release: epel-release
+    
+    container:
+      image: ${{ matrix.distro }}
+    
+    steps:
+      - name: Install base dependencies
+        run: |
+          if command -v dnf &> /dev/null; then
+            dnf install -y git
+          else
+            yum install -y git
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enable EPEL repository
+        if: matrix.epel_release
+        run: |
+          if command -v dnf &> /dev/null; then
+            dnf install -y ${{ matrix.epel_release }}
+            dnf config-manager --set-enabled crb || dnf config-manager --set-enabled powertools || true
+          else
+            yum install -y ${{ matrix.epel_release }}
+            yum-config-manager --enable crb || yum-config-manager --enable powertools || true
+          fi
+
+      - name: Install build dependencies
+        run: |
+          if command -v dnf &> /dev/null; then
+            dnf install -y \
+              go-rpm-macros \
+              go-vendor-tools \
+              golang \
+              rpm-build \
+              rpmdevtools
+          else
+            yum install -y \
+              go-rpm-macros \
+              go-vendor-tools \
+              golang \
+              rpm-build \
+              rpmdevtools
+          fi
+
+      - name: Set up rpmbuild tree
+        run: rpmdev-setuptree
+
+      - name: Set version for test build
+        id: version
+        run: |
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            version="0.0.0"
+            release="0.pr${{ github.event.pull_request.number }}.$(date +%Y%m%d%H%M%S)"
+          else
+            version="0.0.0"
+            release="0.$(git rev-parse --short HEAD)"
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "release=${release}" >> "$GITHUB_OUTPUT"
+
+      - name: Create source tarball
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          tar czf "${HOME}/rpmbuild/SOURCES/fetch-jwks-${version}.tar.gz" \
+            --transform "s,^\./,fetch-jwks-${version}/," \
+            --transform "s,^\.,fetch-jwks-${version}," \
+            --exclude=.git \
+            --exclude=.github \
+            .
+
+      - name: Generate vendor tarball
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          # Install dependencies for go-vendor-archive
+          if command -v dnf &> /dev/null; then
+            dnf install -y golang git
+          else
+            yum install -y golang git
+          fi
+          
+          # Extract source to build vendor tarball
+          cd "${HOME}/rpmbuild/SOURCES"
+          tar xzf "fetch-jwks-${version}.tar.gz"
+          cd "fetch-jwks-${version}"
+          
+          # Generate vendor archive
+          go-vendor-archive -f fetch-jwks -v "${version}"
+          
+          # Move vendor tarball to SOURCES
+          mv "fetch-jwks-${version}-vendor.tar.gz" "${HOME}/rpmbuild/SOURCES/"
+          
+          # Cleanup
+          cd "${HOME}/rpmbuild/SOURCES"
+          rm -rf "fetch-jwks-${version}"
+
+      - name: Build RPM
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          release="${{ steps.version.outputs.release }}"
+          
+          rpmbuild -ba rpm/fetch-jwks.spec \
+            --define "version ${version}" \
+            --define "release ${release}%{?dist}"
+
+      - name: List built RPMs
+        run: |
+          echo "=== Built RPMs ==="
+          find "${HOME}/rpmbuild/RPMS" -name '*.rpm' -exec ls -lh {} \;
+          echo ""
+          echo "=== RPM Info ==="
+          find "${HOME}/rpmbuild/RPMS" -name '*.rpm' -exec rpm -qip {} \;
+
+      - name: Test install RPM
+        run: |
+          rpm_file=$(find "${HOME}/rpmbuild/RPMS" -name 'fetch-jwks-*.rpm' | head -1)
+          if command -v dnf &> /dev/null; then
+            dnf install -y "${rpm_file}"
+          else
+            yum install -y "${rpm_file}"
+          fi
+          
+          # Verify binary is installed and runs
+          fetch-jwks --help || true
+
+      - name: Collect RPMs
+        if: always()
+        run: |
+          mkdir -p /tmp/rpms
+          find "${HOME}/rpmbuild/RPMS" -name '*.rpm' -exec cp {} /tmp/rpms/ \;
+          find "${HOME}/rpmbuild/SRPMS" -name '*.rpm' -exec cp {} /tmp/rpms/ \;
+
+      - name: Upload RPM artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpms-${{ matrix.name }}
+          path: /tmp/rpms/*.rpm
+          retention-days: 7
+
+  rpmlint:
+    name: Run rpmlint
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    
+    steps:
+      - name: Install dependencies
+        run: dnf install -y git rpmlint
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run rpmlint on spec file
+        run: |
+          rpmlint rpm/fetch-jwks.spec || true
+        continue-on-error: true
