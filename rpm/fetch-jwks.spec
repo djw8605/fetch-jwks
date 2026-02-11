@@ -48,3 +48,5 @@ install -d -m 0755 %{buildroot}%{_localstatedir}/cache/jwks
 %dir %{_localstatedir}/cache/jwks
 
 %changelog
+* Wed Feb 11 2026 Derek Weitzel <dweitzel@unl.edu> - 0.0.0-1
+- Initial RPM packaging
