@@ -117,8 +117,7 @@ jobs:
           # It will create the vendor tarball and place it in rpmbuild/SPECS
           go_vendor_archive create "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
           # Copy the generated vendor tarball to rpmbuild/SOURCES so rpmbuild can find it
-          vendor_tarball=$(grep -E '^Source[0-9]+:' "${HOME}/rpmbuild/SPECS/fetch-jwks.spec" | awk '{print $2}')
-          cp "${HOME}/rpmbuild/SPECS/${vendor_tarball}" "${HOME}/rpmbuild/SOURCES/"
+          cp ${HOME}/rpmbuild/SPECS/fetch-jwks-${version}-vendor.tar.gz "${HOME}/rpmbuild/SOURCES/"
 
 
       - name: Build RPM
