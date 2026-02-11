@@ -61,6 +61,7 @@ jobs:
             dnf install -y \
               go-rpm-macros \
               go-vendor-tools \
+              "golang(gopkg.in/yaml.v3)" \
               golang \
               rpm-build \
               rpmdevtools
@@ -68,6 +69,7 @@ jobs:
             yum install -y \
               go-rpm-macros \
               go-vendor-tools \
+              "golang(gopkg.in/yaml.v3)" \
               golang \
               rpm-build \
               rpmdevtools
@@ -105,6 +107,7 @@ jobs:
           
           # Copy spec file to rpmbuild SPECS directory
           cp rpm/fetch-jwks.spec "${HOME}/rpmbuild/SPECS/"
+          cp go-vendor-tools.toml "${HOME}/rpmbuild/SOURCES/"
 
           # go_vendor_archive expects Source0 next to the spec file
           cp "${HOME}/rpmbuild/SOURCES/fetch-jwks-${version}.tar.gz" \
