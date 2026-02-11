@@ -30,7 +30,7 @@ retries with exponential backoff and conditional requests via
 ETag/If-None-Match to avoid unnecessary downloads.
 
 %prep
-%goprep -p1
+%goprep -k
 tar -xf %{S:1}
 
 %generate_buildrequires
