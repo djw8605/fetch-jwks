@@ -46,14 +46,8 @@ jobs:
       - name: Generate vendor tarball
         run: |
           version="${{ steps.version.outputs.version }}"
-          cd "${HOME}/rpmbuild/SOURCES"
-          tar xzf "fetch-jwks-${version}.tar.gz"
-          cd "fetch-jwks-${version}"
-          cp rpm/fetch-jwks.spec .
-          go_vendor_archive create fetch-jwks.spec
-          mv "fetch-jwks-${version}-vendor.tar.gz" "${HOME}/rpmbuild/SOURCES/"
-          cd "${HOME}/rpmbuild/SOURCES"
-          rm -rf "fetch-jwks-${version}"
+          cp rpm/fetch-jwks.spec "${HOME}/rpmbuild/SPECS/"
+          go_vendor_archive create "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
 
       - name: Build RPM
         run: |

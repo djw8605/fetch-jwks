@@ -102,28 +102,12 @@ jobs:
       - name: Generate vendor tarball
         run: |
           version="${{ steps.version.outputs.version }}"
-          # Install dependencies for go_vendor_archive
-          if command -v dnf &> /dev/null; then
-            dnf install -y golang git
-          else
-            yum install -y golang git
-          fi
           
-          # Extract source to build vendor tarball
-          cd "${HOME}/rpmbuild/SOURCES"
-          tar xzf "fetch-jwks-${version}.tar.gz"
-          cd "fetch-jwks-${version}"
+          # Copy spec file to rpmbuild SPECS directory
+          cp rpm/fetch-jwks.spec "${HOME}/rpmbuild/SPECS/"
           
-          # Copy spec file and generate vendor archive
-          cp rpm/fetch-jwks.spec .
-          go_vendor_archive create fetch-jwks.spec
-          
-          # Move vendor tarball to SOURCES
-          mv "fetch-jwks-${version}-vendor.tar.gz" "${HOME}/rpmbuild/SOURCES/"
-          
-          # Cleanup
-          cd "${HOME}/rpmbuild/SOURCES"
-          rm -rf "fetch-jwks-${version}"
+          # Run go_vendor_archive from the source checkout
+          go_vendor_archive create "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
 
       - name: Build RPM
         run: |
