@@ -35,11 +35,13 @@ ETag/If-None-Match to avoid unnecessary downloads.
 
 %generate_buildrequires
 %go_generate_buildrequires
+%go_vendor_license_buildrequires -c %{S:2}
 
 %build
 %gobuild -o %{gobuilddir}/bin/fetch-jwks %{goipath}/cmd/fetch-jwks
 
 %install
+%go_vendor_license_install -c %{S:2}
 install -D -m 0755 %{gobuilddir}/bin/fetch-jwks %{buildroot}%{_bindir}/fetch-jwks
 install -D -m 0644 examples/fetch-jwks.example.yaml %{buildroot}%{_sysconfdir}/fetch-jwks.conf
 install -d -m 0755 %{buildroot}%{_sysconfdir}/fetch-jwks.config.d
@@ -47,11 +49,10 @@ install -d -m 0755 %{buildroot}%{_localstatedir}/cache/jwks
 
 %check
 %gocheck
+%go_vendor_license_check -c %{S:2}
 
-%files
+%files -f %{go_vendor_license_filelist}
 %license LICENSE
-%license _licenses/*
-%license vendor/modules.txt
 %doc README.md examples/fetch-jwks.example.yaml
 %{_bindir}/fetch-jwks
 %config(noreplace) %{_sysconfdir}/fetch-jwks.conf
