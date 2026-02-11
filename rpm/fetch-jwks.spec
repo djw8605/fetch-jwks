@@ -16,7 +16,7 @@ License:        Apache-2.0 AND (MIT OR Apache-2.0)
 URL:            %{gourl}
 Source0:        %{forgeurl}/archive/v%{version}/fetch-jwks-%{version}.tar.gz
 # Generate vendor tarball with:
-# go_vendor_archive create -f %{goipath} -v %{version}
+# go_vendor_archive create fetch-jwks.spec
 Source1:        %{goipath}-%{version}-vendor.tar.gz
 
 BuildRequires:  go-rpm-macros
