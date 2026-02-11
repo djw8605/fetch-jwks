@@ -18,6 +18,7 @@ Source0:        %{forgeurl}/archive/v%{version}/fetch-jwks-%{version}.tar.gz
 # Generate vendor tarball with:
 # go_vendor_archive create fetch-jwks.spec
 Source1:        %{goipath}-%{version}-vendor.tar.gz
+Source2:        go-vendor-tools.toml
 
 BuildRequires:  go-rpm-macros
 BuildRequires:  go-vendor-tools
