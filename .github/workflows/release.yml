@@ -47,7 +47,8 @@ jobs:
         run: |
           version="${{ steps.version.outputs.version }}"
           cp rpm/fetch-jwks.spec "${HOME}/rpmbuild/SPECS/"
-          go_vendor_archive create "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
+          cd "${HOME}/rpmbuild/SPECS"
+          go_vendor_archive create fetch-jwks.spec
 
       - name: Build RPM
         run: |

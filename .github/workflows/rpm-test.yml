@@ -106,8 +106,9 @@ jobs:
           # Copy spec file to rpmbuild SPECS directory
           cp rpm/fetch-jwks.spec "${HOME}/rpmbuild/SPECS/"
           
-          # Run go_vendor_archive from the source checkout
-          go_vendor_archive create "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
+          # Run go_vendor_archive from SPECS directory with just the filename
+          cd "${HOME}/rpmbuild/SPECS"
+          go_vendor_archive create fetch-jwks.spec
 
       - name: Build RPM
         run: |
