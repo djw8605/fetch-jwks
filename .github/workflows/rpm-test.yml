@@ -107,8 +107,8 @@ jobs:
           cp rpm/fetch-jwks.spec "${HOME}/rpmbuild/SPECS/"
 
           # go_vendor_archive expects Source0 next to the spec file
-          #cp "${HOME}/rpmbuild/SOURCES/fetch-jwks-${version}.tar.gz" \
-          #  "${HOME}/rpmbuild/SPECS/fetch-jwks-${version}.tar.gz"
+          cp "${HOME}/rpmbuild/SOURCES/fetch-jwks-${version}.tar.gz" \
+            "${HOME}/rpmbuild/SPECS/fetch-jwks-${version}.tar.gz"
           
           # Update spec file to use correct version
           sed -i "s/^Version:.*/Version:        ${version}/" "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
@@ -117,6 +117,7 @@ jobs:
           # It will create the vendor tarball and place it in rpmbuild/SOURCES
           cd ${HOME}/rpmbuild/SOURCES
           go_vendor_archive create "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
+          
 
       - name: Build RPM
         run: |
