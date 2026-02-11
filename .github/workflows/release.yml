@@ -49,7 +49,7 @@ jobs:
           cd "${HOME}/rpmbuild/SOURCES"
           tar xzf "fetch-jwks-${version}.tar.gz"
           cd "fetch-jwks-${version}"
-          go-vendor-archive -f fetch-jwks -v "${version}"
+          go_vendor_archive create -f fetch-jwks -v "${version}"
           mv "fetch-jwks-${version}-vendor.tar.gz" "${HOME}/rpmbuild/SOURCES/"
           cd "${HOME}/rpmbuild/SOURCES"
           rm -rf "fetch-jwks-${version}"

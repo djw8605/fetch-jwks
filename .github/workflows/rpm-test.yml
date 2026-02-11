@@ -114,8 +114,8 @@ jobs:
           tar xzf "fetch-jwks-${version}.tar.gz"
           cd "fetch-jwks-${version}"
           
-          # Generate vendor archive
-          go_vendor_archive -f fetch-jwks -v "${version}"
+          # Generate vendor archive using the correct command syntax
+          go_vendor_archive create -f fetch-jwks -v "${version}"
           
           # Move vendor tarball to SOURCES
           mv "fetch-jwks-${version}-vendor.tar.gz" "${HOME}/rpmbuild/SOURCES/"
