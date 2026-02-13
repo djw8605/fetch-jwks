@@ -14,9 +14,9 @@ import (
 	"testing"
 	"time"
 
-	"fetch-jwks/internal/cache"
-	"fetch-jwks/internal/config"
-	"fetch-jwks/internal/fetcher"
+	"github.com/bbockelm/fetch-jwks/internal/cache"
+	"github.com/bbockelm/fetch-jwks/internal/config"
+	"github.com/bbockelm/fetch-jwks/internal/fetcher"
 )
 
 func TestRetryThenSuccess(t *testing.T) {

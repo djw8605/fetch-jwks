@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
-	"fetch-jwks/internal/cache"
-	"fetch-jwks/internal/config"
+	"github.com/bbockelm/fetch-jwks/internal/cache"
+	"github.com/bbockelm/fetch-jwks/internal/config"
 )
 
 // Run fetches JWKS documents for all configured issuers, respecting concurrency limits.
