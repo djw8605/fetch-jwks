@@ -11,8 +11,8 @@ Summary:        CLI tool for fetching and caching JWKS documents from OAuth2/OID
 
 # Main package is Apache-2.0
 # Vendored dependencies include:
-# - gopkg.in/yaml.v3: MIT OR Apache-2.0
-License:        Apache-2.0 AND (MIT OR Apache-2.0)
+# - gopkg.in/yaml.v3: MIT AND Apache-2.0
+License:        Apache-2.0 AND MIT
 URL:            %{gourl}
 Source0:        %{forgeurl}/archive/v%{version}/fetch-jwks-%{version}.tar.gz
 # Generate vendor tarball with:
