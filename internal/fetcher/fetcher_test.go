@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"fetch-jwks/internal/config"
+	"github.com/bbockelm/fetch-jwks/internal/config"
 )
 
 func TestWellKnownPaths(t *testing.T) {

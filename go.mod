@@ -1,4 +1,4 @@
-module fetch-jwks
+module github.com/bbockelm/fetch-jwks
 
 go 1.22
 

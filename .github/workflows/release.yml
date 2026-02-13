@@ -47,13 +47,17 @@ jobs:
         run: |
           version="${{ steps.version.outputs.version }}"
           cp rpm/fetch-jwks.spec "${HOME}/rpmbuild/SPECS/"
+          cp "${HOME}/rpmbuild/SOURCES/fetch-jwks-${version}.tar.gz" \
+            "${HOME}/rpmbuild/SPECS/fetch-jwks-${version}.tar.gz"
           sed -i "s/^Version:.*/Version:        ${version}/" "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
           go_vendor_archive create "${HOME}/rpmbuild/SPECS/fetch-jwks.spec"
+          cp "${HOME}/rpmbuild/SPECS/fetch-jwks-${version}-vendor.tar.gz" \
+            "${HOME}/rpmbuild/SOURCES/"
 
       - name: Build RPM
         run: |
           version="${{ steps.version.outputs.version }}"
-          rpmbuild -ba rpm/fetch-jwks.spec \
+          rpmbuild -ba "${HOME}/rpmbuild/SPECS/fetch-jwks.spec" \
             --define "version ${version}"
 
       - name: Collect RPMs

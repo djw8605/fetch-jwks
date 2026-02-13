@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"os"
 
-	"fetch-jwks/internal/config"
-	"fetch-jwks/internal/fetcher"
+	"github.com/bbockelm/fetch-jwks/internal/config"
+	"github.com/bbockelm/fetch-jwks/internal/fetcher"
 )
 
 type issuerFlag []config.IssuerConfig

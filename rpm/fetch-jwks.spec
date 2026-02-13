@@ -1,5 +1,5 @@
-%global goipath         fetch-jwks
-%global forgeurl        https://github.com/djw8605/fetch-jwks
+%global goipath         github.com/bbockelm/fetch-jwks
+%global forgeurl        https://github.com/bbockelm/fetch-jwks
 
 Version:        0.0.0
 
@@ -17,7 +17,7 @@ URL:            %{gourl}
 Source0:        %{forgeurl}/archive/v%{version}/fetch-jwks-%{version}.tar.gz
 # Generate vendor tarball with:
 # go_vendor_archive create fetch-jwks.spec
-Source1:        %{goipath}-%{version}-vendor.tar.gz
+Source1:        %{name}-%{version}-vendor.tar.gz
 Source2:        go-vendor-tools.toml
 
 BuildRequires:  go-rpm-macros

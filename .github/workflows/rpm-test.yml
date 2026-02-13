@@ -125,7 +125,7 @@ jobs:
           version="${{ steps.version.outputs.version }}"
           release="${{ steps.version.outputs.release }}"
           
-          rpmbuild -ba rpm/fetch-jwks.spec \
+          rpmbuild -ba "${HOME}/rpmbuild/SPECS/fetch-jwks.spec" \
             --define "version ${version}" \
             --define "release ${release}%{?dist}"
 
